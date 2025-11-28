@@ -10,44 +10,67 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
     <style>
-        .fade-in { animation: fadeIn 0.5s; }
+        .fade-in { animation: fadeIn 0.8s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         #imageModal { backdrop-filter: blur(5px); }
+        
+        /* CSS KHUSUS BACKGROUND LOGIN */
+        .login-bg {
+            /* Gambar Pemandangan Alam */
+            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        /* Lapisan Gelap Tipis agar form lebih kontras */
+        .login-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.2); 
+            z-index: 0;
+        }
     </style>
 </head>
-<body class="bg-gray-200 font-sans text-gray-800">
+<body class="bg-gray-100 font-sans text-gray-800">
 
-    <div id="loginPage" class="min-h-screen flex flex-col items-center justify-center fade-in">
-        <div class="bg-white p-8 rounded-xl shadow-2xl w-96 border-t-4 border-blue-600 z-10">
+    <div id="loginPage" class="min-h-screen flex flex-col items-center justify-center fade-in login-bg relative">
+        <div class="login-overlay"></div> <div class="bg-white p-8 rounded-xl shadow-2xl w-96 border-t-4 border-blue-600 z-10 transform hover:scale-[1.01] transition duration-300">
             <div class="text-center mb-6">
                 <i class="fas fa-archive text-5xl text-blue-600 mb-3"></i>
                 <h2 class="text-2xl font-bold text-gray-800">E-Arsip</h2>
                 <p class="text-gray-500 text-sm">DESA KAYEN</p>
             </div>
+            
             <form onsubmit="handleLogin(event)">
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                    <div class="flex items-center border rounded bg-gray-50">
+                    <div class="flex items-center border rounded bg-gray-50 focus-within:ring-2 ring-blue-200 transition">
                         <span class="px-3 text-gray-500"><i class="fas fa-user"></i></span>
                         <input type="text" id="username" class="w-full py-2 px-1 outline-none bg-transparent" placeholder="admin" required>
                     </div>
                 </div>
                 <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                    <div class="flex items-center border rounded bg-gray-50">
+                    <div class="flex items-center border rounded bg-gray-50 focus-within:ring-2 ring-blue-200 transition">
                         <span class="px-3 text-gray-500"><i class="fas fa-lock"></i></span>
                         <input type="password" id="password" class="w-full py-2 px-1 outline-none bg-transparent" placeholder="admin123" required>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition transform active:scale-95">MASUK</button>
-                <p id="loginError" class="text-red-500 text-xs text-center mt-3 hidden">Username atau Password salah!</p>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition transform active:scale-95 shadow-lg">
+                    MASUK
+                </button>
+                <p id="loginError" class="text-red-500 text-xs text-center mt-3 hidden animate-bounce">Username atau Password salah!</p>
             </form>
             <div class="mt-4 text-center text-xs text-gray-400">Default: admin / admin123</div>
         </div>
-        <div class="mt-8 text-gray-500 text-xs font-medium">&copy; 2025 @masluki.id</div>
+
+        <div class="mt-8 text-white text-xs font-medium z-10 drop-shadow-md opacity-90">
+            &copy; 2025 @masluki.id
+        </div>
     </div>
 
-    <div id="dashboardPage" class="hidden fade-in min-h-screen flex flex-col justify-between">
+    <div id="dashboardPage" class="hidden fade-in min-h-screen flex flex-col justify-between bg-gray-200">
         <div>
             <nav class="bg-slate-800 p-4 text-white shadow-lg sticky top-0 z-50">
                 <div class="container mx-auto flex justify-between items-center">
@@ -58,7 +81,7 @@
                             <p class="text-xs text-gray-400">DESA KAYEN KECAMATAN BANCAR</p>
                         </div>
                     </div>
-                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded transition">
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded transition shadow">
                         <i class="fas fa-sign-out-alt mr-1"></i> Keluar
                     </button>
                 </div>
@@ -66,15 +89,15 @@
 
             <div class="container mx-auto mt-8 p-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500 transform hover:-translate-y-1 transition">
                         <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider">Total Surat</h3>
                         <p class="text-3xl font-bold text-gray-800" id="totalSurat">0</p>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
+                    <div class="bg-white p-6 rounded-lg shadow border-l-4 border-green-500 transform hover:-translate-y-1 transition">
                         <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider">Surat Masuk</h3>
                         <p class="text-3xl font-bold text-gray-800" id="totalMasuk">0</p>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="bg-white p-6 rounded-lg shadow border-l-4 border-red-500 transform hover:-translate-y-1 transition">
                         <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider">Surat Keluar</h3>
                         <p class="text-3xl font-bold text-gray-800" id="totalKeluar">0</p>
                     </div>
@@ -353,119 +376,40 @@
                 return;
             }
 
-            // 1. Data Setup
             const blnSelect = document.getElementById('filterBulan');
             const blnText = blnSelect.options[blnSelect.selectedIndex].text;
             const thn = document.getElementById('filterTahun').value;
             const title = `LAPORAN ARSIP SURAT - ${blnText.toUpperCase()} ${thn}`;
             
-            // Header Columns
             const headers = ["No", "Tanggal", "Nomor Surat", "Jenis", "Pengirim/Tujuan", "Bagian/Seksi", "Perihal", "Status File"];
-
-            // Map Data
             const rows = currentFilteredData.map((item, index) => [
-                index + 1,
-                item.tanggal,
-                item.nomor,
-                item.jenis,
-                item.pihak,
-                item.seksi,
-                item.perihal,
-                item.fileData ? "Ada" : "-"
+                index + 1, item.tanggal, item.nomor, item.jenis, item.pihak, item.seksi, item.perihal, item.fileData ? "Ada" : "-"
             ]);
 
-            // Combine for Sheet Creation
-            const wsData = [
-                [title], // Row 0: Title
-                [],      // Row 1: Spasi
-                headers, // Row 2: Header
-                ...rows  // Row 3+: Data
-            ];
-
-            // Create Workbook & Sheet
+            const wsData = [[title], [], headers, ...rows];
             const wb = XLSX.utils.book_new();
             const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-            // --- STYLING LOGIC ---
-            
-            // 1. Merge Title Cells (A1 sampai H1)
             ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }];
+            ws['!cols'] = [{ wch: 5 }, { wch: 12 }, { wch: 25 }, { wch: 10 }, { wch: 25 }, { wch: 15 }, { wch: 40 }, { wch: 10 }];
 
-            // 2. Set Column Widths
-            ws['!cols'] = [
-                { wch: 5 },  // No
-                { wch: 12 }, // Tanggal
-                { wch: 25 }, // Nomor
-                { wch: 10 }, // Jenis
-                { wch: 25 }, // Pihak
-                { wch: 15 }, // Seksi
-                { wch: 40 }, // Perihal (Lebar karena text wrap)
-                { wch: 10 }  // Status
-            ];
+            const styleTitle = { font: { bold: true, sz: 14, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "2F75B5" } }, alignment: { horizontal: "center", vertical: "center" } };
+            const styleHeader = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "4472C4" } }, alignment: { horizontal: "center", vertical: "center" }, border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } };
+            const styleData = { alignment: { vertical: "top", wrapText: true }, border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } };
+            const styleCenter = { alignment: { horizontal: "center", vertical: "top" }, border: styleData.border };
 
-            // 3. Define Styles
-            const styleTitle = {
-                font: { bold: true, sz: 14, color: { rgb: "FFFFFF" } },
-                fill: { fgColor: { rgb: "2F75B5" } }, // Blue
-                alignment: { horizontal: "center", vertical: "center" }
-            };
-
-            const styleHeader = {
-                font: { bold: true, color: { rgb: "FFFFFF" } },
-                fill: { fgColor: { rgb: "4472C4" } }, // Lighter Blue
-                alignment: { horizontal: "center", vertical: "center" },
-                border: {
-                    top: { style: "thin" }, bottom: { style: "thin" },
-                    left: { style: "thin" }, right: { style: "thin" }
-                }
-            };
-
-            const styleData = {
-                alignment: { vertical: "top", wrapText: true },
-                border: {
-                    top: { style: "thin" }, bottom: { style: "thin" },
-                    left: { style: "thin" }, right: { style: "thin" }
-                }
-            };
-
-            const styleCenter = {
-                alignment: { horizontal: "center", vertical: "top" },
-                border: styleData.border
-            };
-
-            // 4. Apply Styles to Cells
             const range = XLSX.utils.decode_range(ws['!ref']);
-            
             for (let R = range.s.r; R <= range.e.r; ++R) {
                 for (let C = range.s.c; C <= range.e.c; ++C) {
                     const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
-                    if (!ws[cellRef]) continue; // Skip empty cells
-
-                    // Apply Title Style (Row 0)
-                    if (R === 0) {
-                        ws[cellRef].s = styleTitle;
-                    }
-                    // Apply Header Style (Row 2)
-                    else if (R === 2) {
-                        ws[cellRef].s = styleHeader;
-                    }
-                    // Apply Data Style (Row 3+)
-                    else if (R > 2) {
-                        // Center alignment for No, Tanggal, Jenis, Status
-                        if (C === 0 || C === 1 || C === 3 || C === 7) {
-                            ws[cellRef].s = styleCenter;
-                        } else {
-                            ws[cellRef].s = styleData;
-                        }
-                    }
+                    if (!ws[cellRef]) continue; 
+                    if (R === 0) ws[cellRef].s = styleTitle;
+                    else if (R === 2) ws[cellRef].s = styleHeader;
+                    else if (R > 2) ws[cellRef].s = (C === 0 || C === 1 || C === 3 || C === 7) ? styleCenter : styleData;
                 }
             }
-
             XLSX.utils.book_append_sheet(wb, ws, "Laporan Arsip");
-            
-            // Generate Filename
-            const filename = `Laporan_Arsip_${blnSelect.value}_${thn}.xlsx`;
-            XLSX.writeFile(wb, filename);
+            XLSX.writeFile(wb, `Laporan_Arsip_${blnSelect.value}_${thn}.xlsx`);
         }
 
         // --- RENDER UI ---
