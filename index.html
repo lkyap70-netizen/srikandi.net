@@ -6,63 +6,96 @@
     <title>Sistem Arsip Surat - Desa Kayen</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
     <style>
-        .fade-in { animation: fadeIn 0.8s; }
+        .fade-in { animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         #imageModal { backdrop-filter: blur(5px); }
         
-        /* CSS KHUSUS BACKGROUND LOGIN */
+        /* Background Login */
         .login-bg {
-            /* Gambar Pemandangan Alam */
-            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            /* Pastikan file image_2.png ada di folder yang sama, atau ganti URL ini */
+            background-image: url('image_2.png'); 
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             position: relative;
         }
-        /* Lapisan Gelap Tipis agar form lebih kontras */
         .login-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.2); 
+            background: rgba(0, 0, 0, 0.4); /* Sedikit lebih gelap agar tulisan jelas */
             z-index: 0;
         }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
-    <div id="loginPage" class="min-h-screen flex flex-col items-center justify-center fade-in login-bg relative">
-        <div class="login-overlay"></div> <div class="bg-white p-8 rounded-xl shadow-2xl w-96 border-t-4 border-blue-600 z-10 transform hover:scale-[1.01] transition duration-300">
+    <div id="authPage" class="min-h-screen flex flex-col items-center justify-center fade-in login-bg relative">
+        <div class="login-overlay"></div>
+
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-96 border-t-4 border-blue-600 z-10 transform hover:scale-[1.01] transition duration-300">
+            
             <div class="text-center mb-6">
                 <i class="fas fa-archive text-5xl text-blue-600 mb-3"></i>
                 <h2 class="text-2xl font-bold text-gray-800">E-Arsip</h2>
                 <p class="text-gray-500 text-sm">DESA KAYEN</p>
             </div>
-            
-            <form onsubmit="handleLogin(event)">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                    <div class="flex items-center border rounded bg-gray-50 focus-within:ring-2 ring-blue-200 transition">
-                        <span class="px-3 text-gray-500"><i class="fas fa-user"></i></span>
-                        <input type="text" id="username" class="w-full py-2 px-1 outline-none bg-transparent" placeholder="admin" required>
+
+            <div id="loginFormSection">
+                <h3 class="text-center text-lg font-bold text-gray-700 mb-4 border-b pb-2">Silakan Masuk</h3>
+                <form onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                        <div class="flex items-center border rounded bg-gray-50 focus-within:ring-2 ring-blue-200">
+                            <span class="px-3 text-gray-500"><i class="fas fa-user"></i></span>
+                            <input type="text" id="loginUser" class="w-full py-2 px-1 outline-none bg-transparent" placeholder="Username" required>
+                        </div>
                     </div>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                    <div class="flex items-center border rounded bg-gray-50 focus-within:ring-2 ring-blue-200 transition">
-                        <span class="px-3 text-gray-500"><i class="fas fa-lock"></i></span>
-                        <input type="password" id="password" class="w-full py-2 px-1 outline-none bg-transparent" placeholder="admin123" required>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <div class="flex items-center border rounded bg-gray-50 focus-within:ring-2 ring-blue-200">
+                            <span class="px-3 text-gray-500"><i class="fas fa-lock"></i></span>
+                            <input type="password" id="loginPass" class="w-full py-2 px-1 outline-none bg-transparent" placeholder="Password" required>
+                        </div>
                     </div>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition transform active:scale-95 shadow-lg">
-                    MASUK
-                </button>
-                <p id="loginError" class="text-red-500 text-xs text-center mt-3 hidden animate-bounce">Username atau Password salah!</p>
-            </form>
-            <div class="mt-4 text-center text-xs text-gray-400">Default: admin / admin123</div>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition shadow-lg mb-4">
+                        MASUK
+                    </button>
+                    <p id="loginError" class="text-red-500 text-xs text-center mb-3 hidden animate-bounce">Username atau Password salah!</p>
+                    
+                    <div class="text-center text-sm text-gray-600">
+                        Belum punya akun? <a href="#" onclick="toggleAuth('register')" class="text-blue-600 font-bold hover:underline">Buat Akun</a>
+                    </div>
+                </form>
+            </div>
+
+            <div id="registerFormSection" class="hidden">
+                <h3 class="text-center text-lg font-bold text-gray-700 mb-4 border-b pb-2">Buat Akun Baru</h3>
+                <form onsubmit="handleRegister(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Username Baru</label>
+                        <input type="text" id="regUser" class="w-full border rounded px-3 py-2 outline-none focus:ring-2 ring-blue-200" placeholder="Buat Username" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <input type="password" id="regPass" class="w-full border rounded px-3 py-2 outline-none focus:ring-2 ring-blue-200" placeholder="Buat Password" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Konfirmasi Password</label>
+                        <input type="password" id="regPassConfirm" class="w-full border rounded px-3 py-2 outline-none focus:ring-2 ring-blue-200" placeholder="Ulangi Password" required>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition shadow-lg mb-4">
+                        DAFTAR
+                    </button>
+                    
+                    <div class="text-center text-sm text-gray-600">
+                        Sudah punya akun? <a href="#" onclick="toggleAuth('login')" class="text-blue-600 font-bold hover:underline">Login Disini</a>
+                    </div>
+                </form>
+            </div>
+
         </div>
 
         <div class="mt-8 text-white text-xs font-medium z-10 drop-shadow-md opacity-90">
@@ -81,9 +114,12 @@
                             <p class="text-xs text-gray-400">DESA KAYEN KECAMATAN BANCAR</p>
                         </div>
                     </div>
-                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded transition shadow">
-                        <i class="fas fa-sign-out-alt mr-1"></i> Keluar
-                    </button>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm hidden md:inline">Halo, <b id="displayUsername" class="text-yellow-400">User</b></span>
+                        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded transition shadow">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Keluar
+                        </button>
+                    </div>
                 </div>
             </nav>
 
@@ -145,7 +181,6 @@
                     </div>
 
                     <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow">
-                        
                         <div class="flex flex-col gap-4 mb-4 border-b pb-4">
                             <h2 class="text-lg font-bold text-gray-700"><i class="fas fa-list mr-2"></i>Daftar Arsip</h2>
 
@@ -169,7 +204,6 @@
                                     </select>
                                     <input type="number" id="filterTahun" onchange="filterPeriode()" class="border rounded px-2 py-1 w-20 outline-none bg-white" value="2025">
                                 </div>
-
                                 <button onclick="downloadExcel()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-4 rounded shadow-lg flex items-center transform hover:scale-105 transition">
                                     <i class="fas fa-file-excel mr-2 text-lg"></i> Export Excel
                                 </button>
@@ -233,39 +267,128 @@
     </div>
 
     <script>
-        const CREDENTIALS = { user: "admin", pass: "admin123" };
-        let allDataSurat = []; 
-        let currentFilteredData = []; 
+        // --- 1. MANAJEMEN USER (LOGIN & REGISTER) ---
+        
+        // Inisialisasi: Cek apakah ada data user di LocalStorage?
+        // Jika belum ada, buat user default: admin / admin123
+        function initUsers() {
+            let users = JSON.parse(localStorage.getItem('arsipUsers'));
+            if (!users || users.length === 0) {
+                users = [{ username: 'admin', password: 'admin123' }];
+                localStorage.setItem('arsipUsers', JSON.stringify(users));
+                console.log("Default admin created.");
+            }
+        }
+        initUsers();
 
-        // --- AUTH & INIT ---
-        function checkSession() {
-            sessionStorage.getItem('isLoggedIn') === 'true' ? showDashboard() : showLogin();
+        // Toggle antara Form Login dan Register
+        function toggleAuth(mode) {
+            const loginSec = document.getElementById('loginFormSection');
+            const regSec = document.getElementById('registerFormSection');
+            const errorMsg = document.getElementById('loginError');
+            
+            errorMsg.classList.add('hidden'); // Sembunyikan pesan error
+
+            if (mode === 'register') {
+                loginSec.classList.add('hidden');
+                regSec.classList.remove('hidden');
+                regSec.classList.add('fade-in');
+            } else {
+                regSec.classList.add('hidden');
+                loginSec.classList.remove('hidden');
+                loginSec.classList.add('fade-in');
+            }
         }
-        function showLogin() {
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-        }
-        function showDashboard() {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.remove('hidden');
-            loadSuratFromDB();
-        }
+
         function handleLogin(e) {
             e.preventDefault();
-            if (document.getElementById('username').value === CREDENTIALS.user && document.getElementById('password').value === CREDENTIALS.pass) {
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+            
+            // Ambil database user dari LocalStorage
+            const users = JSON.parse(localStorage.getItem('arsipUsers')) || [];
+            
+            // Cari user yang cocok
+            const validUser = users.find(user => user.username === u && user.password === p);
+
+            if (validUser) {
                 sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('activeUser', validUser.username); // Simpan nama user
                 document.getElementById('loginError').classList.add('hidden');
                 showDashboard();
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
             }
         }
-        function logout() {
-            if(confirm('Keluar sistem?')) { sessionStorage.removeItem('isLoggedIn'); location.reload(); }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const u = document.getElementById('regUser').value.trim();
+            const p = document.getElementById('regPass').value.trim();
+            const p2 = document.getElementById('regPassConfirm').value.trim();
+
+            if (p !== p2) {
+                alert("Konfirmasi password tidak cocok!");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('arsipUsers')) || [];
+
+            // Cek apakah username sudah ada
+            if (users.some(user => user.username === u)) {
+                alert("Username sudah digunakan. Pilih yang lain.");
+                return;
+            }
+
+            // Simpan User Baru
+            users.push({ username: u, password: p });
+            localStorage.setItem('arsipUsers', JSON.stringify(users));
+            
+            alert("Akun berhasil dibuat! Silakan login.");
+            
+            // Reset form dan kembali ke login
+            document.getElementById('regUser').value = "";
+            document.getElementById('regPass').value = "";
+            document.getElementById('regPassConfirm').value = "";
+            toggleAuth('login');
         }
 
-        // --- DATABASE INDEXEDDB ---
+        function checkSession() {
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                showDashboard();
+            } else {
+                showAuthPage();
+            }
+        }
+
+        function showAuthPage() {
+            document.getElementById('authPage').classList.remove('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.remove('hidden');
+            
+            // Tampilkan nama user di navbar
+            const activeUser = sessionStorage.getItem('activeUser') || 'Admin';
+            document.getElementById('displayUsername').innerText = activeUser;
+            
+            loadSuratFromDB();
+        }
+
+        function logout() {
+            if(confirm('Keluar sistem?')) { 
+                sessionStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('activeUser');
+                location.reload(); 
+            }
+        }
+
+        // --- 2. SISTEM DATABASE & ARSIP (SAMA SEPERTI SEBELUMNYA) ---
         let db;
+        let allDataSurat = []; 
+        let currentFilteredData = []; 
         const DB_NAME = 'ArsipSuratDB';
         const DB_VERSION = 1;
         const STORE_NAME = 'suratStore';
@@ -280,7 +403,6 @@
             if(sessionStorage.getItem('isLoggedIn') === 'true') loadSuratFromDB();
         };
 
-        // --- CRUD LOGIC ---
         function tambahSurat(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSimpan');
@@ -344,7 +466,6 @@
             }
         }
 
-        // --- FILTERING ---
         function filterPeriode() {
             const bulan = document.getElementById('filterBulan').value;
             const tahun = document.getElementById('filterTahun').value;
@@ -369,13 +490,8 @@
             renderTable(currentFilteredData);
         }
 
-        // --- EXPORT TO EXCEL MODERN (STYLING) ---
         function downloadExcel() {
-            if (currentFilteredData.length === 0) {
-                alert("Tidak ada data untuk didownload.");
-                return;
-            }
-
+            if (currentFilteredData.length === 0) { alert("Tidak ada data."); return; }
             const blnSelect = document.getElementById('filterBulan');
             const blnText = blnSelect.options[blnSelect.selectedIndex].text;
             const thn = document.getElementById('filterTahun').value;
@@ -385,14 +501,14 @@
             const rows = currentFilteredData.map((item, index) => [
                 index + 1, item.tanggal, item.nomor, item.jenis, item.pihak, item.seksi, item.perihal, item.fileData ? "Ada" : "-"
             ]);
-
             const wsData = [[title], [], headers, ...rows];
             const wb = XLSX.utils.book_new();
             const ws = XLSX.utils.aoa_to_sheet(wsData);
 
             ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }];
             ws['!cols'] = [{ wch: 5 }, { wch: 12 }, { wch: 25 }, { wch: 10 }, { wch: 25 }, { wch: 15 }, { wch: 40 }, { wch: 10 }];
-
+            
+            // Styling Excel
             const styleTitle = { font: { bold: true, sz: 14, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "2F75B5" } }, alignment: { horizontal: "center", vertical: "center" } };
             const styleHeader = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "4472C4" } }, alignment: { horizontal: "center", vertical: "center" }, border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } };
             const styleData = { alignment: { vertical: "top", wrapText: true }, border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } };
@@ -412,7 +528,6 @@
             XLSX.writeFile(wb, `Laporan_Arsip_${blnSelect.value}_${thn}.xlsx`);
         }
 
-        // --- RENDER UI ---
         function renderTable(data) {
             const tbody = document.getElementById('tabelBody');
             tbody.innerHTML = '';
